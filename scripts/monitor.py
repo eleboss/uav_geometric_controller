@@ -203,6 +203,7 @@ class CmdThread(Thread, HasTraits):
             self.xd = cmd.xc
             if self.mission != 'halt':
                 pub.publish(self.cmd)
+
             self.cmd_tf_pub()
             time.sleep(dt)
             pass
@@ -313,7 +314,7 @@ class ErrorView(HasTraits):
     max_num_points = Int(100)
     num_ticks = Int(0)
 
-    mission = Enum('spin','halt')
+    mission = Enum('spin','halt','take off', 'land')
     mission_exe = Button(color='red')
     takeoff_exe = Button()
     landing_exe = Button()
