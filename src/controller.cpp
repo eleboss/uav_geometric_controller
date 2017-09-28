@@ -14,6 +14,8 @@ void controller::GeometricPositionController(node& node, Vector3d xd, Vector3d x
   b1d_dot = node.R_conv*b1d_dot;
   b1d_2dot = node.R_conv*b1d_2dot;
 
+  cout << "W = \n" << W << endl;
+
   // Translational Error Functions
   Vector3d ex = x - xd;
   Vector3d ev = v - xd_dot;

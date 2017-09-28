@@ -241,9 +241,6 @@ void node::imu_callback(const sensor_msgs::Imu::ConstPtr& msg){
   Vector3d W_b_;
   tf::vectorMsgToEigen(msg->angular_velocity, W_b_);
   W_b = MimuEig * W_b_;
-  cout << "W_b = \n" << W_b << endl;
-  cout << "W_b_ = \n" << W_b_ << endl;
-  cout << "MimuEig = \n" << MimuEig << endl;
   rpy << roll, pitch, yaw;
 }
 
