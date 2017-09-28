@@ -108,7 +108,7 @@ class CmdThread(Thread, HasTraits):
         self.cmd.header.frame_id = uav_name + '/uav'
 
         dt = 0.1
-        z_min = 0.2
+        z_min = 0.35
         v_up = 0.3
         t_total = 5
         z_hover = 1.0
