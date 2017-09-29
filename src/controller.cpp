@@ -2,7 +2,7 @@
 using namespace Eigen;
 using namespace std;
 
-void controller::GeometricPositionController(node& node, Vector3d xd, Vector3d xd_dot, Vector3d xd_2dot,Vector3d Wd, Vector3d Wd_dot, Vector3d x, Vector3d v, Vector3d W_in, Matrix3d R){
+void controller::GeometricPositionController(node& node, Vector3d xd, Vector3d xd_dot, Vector3d xd_2dot,Vector3d Wd, Vector3d Wd_dot, Vector3d x, Vector3d v, Vector3d W_in, Matrix3d R, bool flag_integral){
   std::cout.precision(5);
   Vector3d xd_3dot, xd_4dot, b1d, b1d_dot, b1d_2dot;
   xd_3dot = xd_4dot = b1d_dot = b1d_2dot = Vector3d::Zero();
@@ -22,6 +22,10 @@ void controller::GeometricPositionController(node& node, Vector3d xd, Vector3d x
   // Saturation function
   node.eiX = node.eiX_last+node.del_t*(ex+node.cX*ev);
   err_sat(-node.eiX_sat, node.eiX_sat, node.eiX);
+  if(!flag_integral)
+  {
+    node.eiX = Vector3d::Zero();
+  }
   node.eiX_last = node.eiX;
 
   // Force 'f' along negative b3-axis
@@ -93,6 +97,10 @@ void controller::GeometricPositionController(node& node, Vector3d xd, Vector3d x
   // Attitude Integral Term
   node.eiR = node.del_t*(node.eR+node.cR*node.eW) + node.eiR_last;
   err_sat(-node.eiR_sat, node.eiR_sat, node.eiR);
+  if(!flag_integral)
+  {
+    node.eiR = Vector3d::Zero();
+  }
   node.eiR_last = node.eiR;
   // 3D Moment
   Matrix3d kRm = Vector3d(kR,kR,kR*kRr).asDiagonal();

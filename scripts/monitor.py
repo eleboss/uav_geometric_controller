@@ -208,6 +208,7 @@ class CmdThread(Thread, HasTraits):
             pass
 
         self.motor_set(False,False)
+        rospy.set_param('/'+self.name+'/controller/flag_integral', False)
         pub.publish(self.cmd)
         print('Process: cmd thread killed')
 
@@ -317,9 +318,11 @@ class ErrorView(HasTraits):
     mission_exe = Button()
     takeoff_exe = Button()
     landing_exe = Button()
+    flag_integral = Button()
     reset = Button()
 
     motor_bool = Bool
+    int_bool = Bool
 
     capture_thread = Instance(Run_thread)
     rqt_thread = Instance(Run_thread)
@@ -349,6 +352,7 @@ class ErrorView(HasTraits):
             HGroup(
                 Item('takeoff_exe', label='Take off', show_label=False),
                 Item('landing_exe', label='Land', show_label=False),
+                Item('flag_integral', label='flag_integral', show_label=False),
             ),
             HGroup(
                 Item('mission', label='Mission', show_label=True),
@@ -369,6 +373,7 @@ class ErrorView(HasTraits):
             ),
             Item('abort', label='Stop motor', show_label=False, image=ImageResource(pathname+'/red.png')),
             Item('motor_bool', label='Motor', show_label=True),
+            Item('int_bool', label='Integal', show_label=True),
             label='Execution',
         ),
         Group(
@@ -452,12 +457,17 @@ class ErrorView(HasTraits):
         self.cmd_thread.t_init = time.time()
         self.cmd_thread.mission = self.mission
 
+    def _flag_integral_fired(self):
+        flag = rospy.get_param('/'+self.name+'/controller/flag_integral')
+        rospy.set_param('/'+self.name+'/controller/flag_integral', not flag)
+
     def _takeoff_exe_fired(self):
         self.mission = 'take off'
         print('Mission: ' + self.mission)
         self.cmd_thread.t_cur = 0
         self.cmd_thread.t_init = time.time()
         self.cmd_thread.mission = self.mission
+        rospy.set_param('/'+self.name+'/controller/flag_integral', True)
 
     def _start_stop_motor_fired(self):
         """

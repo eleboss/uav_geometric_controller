@@ -40,9 +40,10 @@ float32[9] R
 # position, attitude error vectors (NED)
 geometry_msgs/Vector3 ex # + ev
 geometry_msgs/Vector3 ev
+geometry_msgs/Vector3 eiX
 geometry_msgs/Vector3 eR # + eW
 geometry_msgs/Vector3 eW
-# TODO include eiX, eiR values
+geometry_msgs/Vector3 eiR
 
 # Actuation value
 # force: total thrust

@@ -24,6 +24,8 @@ void publish_error(node& node){
   tf::vectorEigenToMsg(node.eX, e_msg.ex);
   tf::vectorEigenToMsg(node.W_b, e_msg.w_imu);
   tf::vectorEigenToMsg(node.eV, e_msg.ev);
+  tf::vectorEigenToMsg(node.eiX, e_msg.eiX);
+  tf::vectorEigenToMsg(node.eiR, e_msg.eiR);
   tf::vectorEigenToMsg(node.xd, e_msg.xc);
   tf::vectorEigenToMsg(node.xd_dot, e_msg.xc_dot);
   tf::vectorEigenToMsg(node.xd_ddot, e_msg.xc_2dot);
@@ -149,6 +151,7 @@ node::node(){
   v_ave = MatrixXd::Zero(3,10);
   q_v=q_imu=Quaterniond(0,0,0,1);
   f_total = 0.0;
+  flag_integral = false;
 
   double wnx = 4, zetax = 0.7;
   kx = wnx*wnx*m;
@@ -288,6 +291,7 @@ void node::cmd_callback(const uav_geometric_controller::trajectory::ConstPtr& ms
   xc_ned = R_conv*xd;
   xc_ned_dot = R_conv*xd_dot;
   xc_ned_2dot = R_conv*xd_ddot;
+  ros::param::get("controller/flag_integral",flag_integral);
 }
 
 
@@ -315,7 +319,7 @@ void node::ctl_callback(hw_interface hw_intf){
     if(mode == 1)
     {
         controller::GeometricPositionController(*this,
-            xc_ned, xc_ned_dot, xc_ned_2dot, Wd, Wd_dot, x_v_ned, v_v_ned, W_b, R);
+            xc_ned, xc_ned_dot, xc_ned_2dot, Wd, Wd_dot, x_v_ned, v_v_ned, W_b, R, flag_integral);
     }
     else
     {

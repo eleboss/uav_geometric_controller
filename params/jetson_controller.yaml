@@ -9,6 +9,7 @@ node:
   Motor: 0
   MotorWarmup: 0
 controller:
+  flag_integral: false
   mode: 1
   g: 9.81
   m: 1.2 # 1.245 Jetson, 1.374 base odroid #1.7 with sensors
@@ -33,5 +34,5 @@ controller:
       ki: 2.0
       c: 0.10
   saturation:
-    x: 0.1
-    R: 0.01
+    x: 3.0
+    R: 1.0

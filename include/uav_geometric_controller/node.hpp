@@ -92,6 +92,7 @@ public:
   Quaterniond q_imu, q_v;
   MatrixXd v_ave;
   bool IMU_flag, Vicon_flag, controller_flag, IMU_as_attitude;
+  bool flag_integral;
   // Integral errors begin at zero
   Vector3d eiX, eiR, eiX_last, eiR_last;
   // Threads (except command key) ON/OFF
