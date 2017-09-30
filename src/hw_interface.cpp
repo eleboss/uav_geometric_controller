@@ -39,8 +39,9 @@ uint8_t* hw_interface::motor_command(int thr[4], bool MotorWarmup, bool MOTOR_ON
       thr[i] = 0;
     else if(MotorWarmup == true)// warm up motors at 20 throttle command
       thr[i] = 60;
-    while(write(fhi2c, &thr[i], 1)!=1)
-    printf("ERROR: Motor %i I2C write command of %i to address %i not sent.\n", i, thr[i], mtr_addr[i]);
+
+    if(write(fhi2c, &thr[i], 1)!=1)
+      printf("ERROR: Motor %i I2C write command of %i to address %i not sent.\n", i, thr[i], mtr_addr[i]);
   }
   return msg;
 }

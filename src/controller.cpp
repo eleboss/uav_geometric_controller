@@ -7,11 +7,13 @@ void controller::GeometricPositionController(node& node, Vector3d xd, Vector3d x
   Vector3d xd_3dot, xd_4dot, b1d, b1d_dot, b1d_2dot;
   xd_3dot = xd_4dot = b1d_dot = b1d_2dot = Vector3d::Zero();
   b1d = node.b1d_ned;
+  b1d_dot = node.b1d_dot_ned;
+//  cout << "b1d_dot = \n" << b1d_dot << endl;
   Vector3d e3(0,0,1);
   // convention conversion
   Vector3d W = W_in;
   node.R = R; node.W = W; node.v = v; node.x = x;
-  b1d_dot = node.R_conv*b1d_dot;
+//  b1d_dot = node.R_conv*b1d_dot;
   b1d_2dot = node.R_conv*b1d_2dot;
 
   // Translational Error Functions

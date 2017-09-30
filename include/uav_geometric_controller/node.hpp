@@ -117,7 +117,7 @@ public:
   Matrix3d R_b, R_conv; // inertial to body and convention conversion
   Vector3d x_e, v_e;// Position and Velocity in inertial (e) frame
   Matrix3d R_c, W_c, Wdot_c;
-  Vector3d b1d, b1d_ned;
+  Vector3d b1d, b1d_ned, b1d_dot, b1d_dot_ned;
   // Error Functions
   Vector3d Wc, Wc_dot, eX, eV, eR, eW, F, M;
   float f_total;

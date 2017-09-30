@@ -284,7 +284,9 @@ void node::cmd_callback(const uav_geometric_controller::trajectory::ConstPtr& ms
   //tf::vectorMsgToEigen(msg->xd_dot,xd_dot);
   //tf::vectorMsgToEigen(msg->xd_ddot,xd_ddot);
   b1d << msg->b1[0], msg->b1[1], msg->b1[2];
+  b1d_dot << msg->b1dot[0], msg->b1dot[1], msg->b1dot[2];
   b1d_ned = R_conv*b1d;
+  b1d_dot_ned = R_conv*b1d_dot;
   xd << msg->xc[0], msg->xc[1], msg->xc[2];
   xd_dot << msg->xc_dot[0], msg->xc_dot[1], msg->xc_dot[2];
   xd_ddot << msg->xc_2dot[0], msg->xc_2dot[1], msg->xc_2dot[2];

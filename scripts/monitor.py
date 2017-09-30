@@ -73,6 +73,7 @@ class CmdThread(Thread, HasTraits):
     wants_abort = False
     cmd = trajectory()
     cmd.b1  = [1,0,0]
+    cmd.b1dot = [0, 0, 0]
     cmd.xc = [0,0,0]
     mission = 'halt'
     t_init = time.time()
@@ -108,7 +109,7 @@ class CmdThread(Thread, HasTraits):
         self.cmd.header.frame_id = uav_name + '/uav'
 
         dt = 0.1
-        z_min = 0.2
+        z_min = 0.32
         v_up = 0.3
         t_total = 5
         z_hover = 1.0
@@ -135,6 +136,7 @@ class CmdThread(Thread, HasTraits):
                 self.motor_set(True,False)
                 motor_flag = True
                 cmd.b1 = [np.cos(x_euler[2]),np.sin(x_euler[2]),0]
+                cmd.b1dot = [0, 0, 0]
                 if self.t_cur <= t_total and self.mission == 'take off':
                     height = z_min+v_up*self.t_cur
                     cmd.xc = [x_v[0],x_v[1],height if height < z_hover else z_hover]
@@ -149,10 +151,11 @@ class CmdThread(Thread, HasTraits):
                 # print('Take off complete')
             elif self.mission == 'spin':
                 # TODO
-                t_total = 30
+                t_total = 10
                 if self.t_cur <= t_total:
                     self.theta = 2*np.pi/t_total*self.t_cur
                     cmd.b1 = [np.cos(x_euler[2]+self.theta),np.sin(x_euler[2]+self.theta),0]
+                    cmd.b1dot = [-np.sin(x_euler[2]+self.theta)*(2*np.pi/t_total), np.cos(x_euler[2]+self.theta)*(2*np.pi/t_total), 0]
                     cmd.xc = [x_v[0],x_v[1],z_hover]
                     # cmd.xc = [(np.cos(theta)-1.)/2.0, 1./2.0*np.sin(theta),z_hover]
                     # cmd.xc_dot = [dt*np.sin(theta)/2.0, dt*1./2.0*np.sin(theta),0]
@@ -160,6 +163,7 @@ class CmdThread(Thread, HasTraits):
                         rospy.set_param('/Jetson/uav/Motor', False)
                     print(cmd.xc)
                 else:
+                    cmd.b1dot = [0, 0, 0]
                     self.mission = 'halt'
                     pub.publish(self.cmd)
                     self.theta = 0
@@ -168,6 +172,7 @@ class CmdThread(Thread, HasTraits):
                 rospy.set_param(explore_flag, False)
                 t_total = z_land/v_up
                 cmd.b1 = [np.cos(x_euler[2]),np.sin(x_euler[2]),0]
+                cmd.b1dot = [0, 0, 0]
                 if self.t_cur <= t_total and self.mission == 'land':
                     height = z_land - (v_up*self.t_cur)
                     cmd.xc[0], cmd.xc[1] = x_v[0],x_v[1]
@@ -190,6 +195,7 @@ class CmdThread(Thread, HasTraits):
                     # rospy.set_param('/Jetson/uav/Motor', False)
                 x_v =  self.x_v
                 x_euler =  self.x_euler
+                cmd.b1dot = [0, 0, 0]
                 cmd.xc[2] = z_hover
                 cmd.xc_dot =[0,0,0]
                 self.t_cur= 0
